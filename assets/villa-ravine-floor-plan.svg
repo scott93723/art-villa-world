@@ -38,8 +38,8 @@
   </defs>
 
   <rect width="1800" height="1200" fill="#f3f1eb"/>
-  <text x="70" y="65" font-family="Avenir Next, PingFang SC, sans-serif" font-size="40" font-weight="650" fill="#202628">Villa Ravine 户型设计</text>
-  <text x="72" y="101" font-family="Avenir Next, PingFang SC, sans-serif" font-size="17" letter-spacing="1.4" fill="#737a7c">依据程序化建筑模型坐标还原 · 北向入口 · 南向花园</text>
+  <text x="70" y="65" font-family="Avenir Next, PingFang TC, Microsoft JhengHei, PingFang SC, sans-serif" font-size="40" font-weight="650" fill="#202628">Villa Ravine 戶型設計</text>
+  <text x="72" y="101" font-family="Avenir Next, PingFang TC, Microsoft JhengHei, PingFang SC, sans-serif" font-size="17" letter-spacing="1.4" fill="#737a7c">依據程式化建築模型座標還原 · 北向入口 · 南向花園</text>
   <line x1="70" y1="126" x2="1730" y2="126" stroke="#c9c7bf"/>
 
   <g filter="url(#shadow)">
@@ -49,8 +49,8 @@
 
   <!-- GROUND FLOOR -->
   <g id="ground-floor">
-    <text x="105" y="210" font-family="Avenir Next, PingFang SC, sans-serif" font-size="28" font-weight="650" fill="#252b2d">01  一层平面</text>
-    <text x="105" y="238" font-family="Avenir Next, PingFang SC, sans-serif" font-size="15" fill="#737a7c">主体 18.0 m × 10.0 m · 建筑面积约 180 m²</text>
+    <text x="105" y="210" font-family="Avenir Next, PingFang TC, Microsoft JhengHei, PingFang SC, sans-serif" font-size="28" font-weight="650" fill="#252b2d">01  一層平面</text>
+    <text x="105" y="238" font-family="Avenir Next, PingFang TC, Microsoft JhengHei, PingFang SC, sans-serif" font-size="15" fill="#737a7c">主體 18.0 m × 10.0 m · 建築面積約 180 m²</text>
 
     <!-- north arrow -->
     <g transform="translate(797 218)">
@@ -67,7 +67,7 @@
     <rect x="172" y="888" width="264" height="182" fill="none" stroke="#c9c5b9" stroke-width="10"/>
     <path d="M430 905V1052M418 920H433M418 940H433M418 960H433" stroke="#628e95" stroke-width="3"/>
     <text x="304" y="986" class="label" fill="#3f7883">泳池</text>
-    <text x="572" y="865" class="small">南向花园</text>
+    <text x="572" y="865" class="small">南向花園</text>
 
     <!-- floor zones -->
     <rect x="158" y="275" width="255" height="347" fill="url(#wood)"/>
@@ -123,13 +123,13 @@
     <ellipse cx="605" cy="596" rx="10" ry="17" class="furn"/>
 
     <!-- room labels -->
-    <text x="284" y="506" class="label">客厅</text>
-    <text x="477" y="352" class="label">玄关</text>
-    <text x="456" y="607" class="small">楼梯厅</text>
-    <text x="653" y="340" class="label">厨房</text>
-    <text x="704" y="472" class="label">餐厅</text>
-    <text x="585" y="579" class="small">客卫</text>
-    <text x="475" y="655" class="micro">全高推拉玻璃门</text>
+    <text x="284" y="506" class="label">客廳</text>
+    <text x="477" y="352" class="label">玄關</text>
+    <text x="456" y="607" class="small">樓梯廳</text>
+    <text x="653" y="340" class="label">廚房</text>
+    <text x="704" y="472" class="label">餐廳</text>
+    <text x="585" y="579" class="small">客衛</text>
+    <text x="475" y="655" class="micro">全高推拉玻璃門</text>
 
     <!-- terrace furniture -->
     <rect x="205" y="682" width="84" height="31" rx="8" class="soft"/>
@@ -147,13 +147,13 @@
     <path d="M799 275V622" class="dim"/>
     <text x="816" y="453" class="small" transform="rotate(90 816 453)">10.0 m</text>
     <path d="M158 1089H770" stroke="#b7b4aa"/>
-    <text x="464" y="1115" class="micro" text-anchor="middle">花园与泳池为场地关系示意</text>
+    <text x="464" y="1115" class="micro" text-anchor="middle">花園與泳池為場地關係示意</text>
   </g>
 
   <!-- UPPER FLOOR -->
   <g id="upper-floor">
-    <text x="970" y="210" font-family="Avenir Next, PingFang SC, sans-serif" font-size="28" font-weight="650" fill="#252b2d">02  二层平面</text>
-    <text x="970" y="238" font-family="Avenir Next, PingFang SC, sans-serif" font-size="15" fill="#737a7c">主体 15.0 m × 12.0 m · 三卧双卫 · 西侧屋顶露台</text>
+    <text x="970" y="210" font-family="Avenir Next, PingFang TC, Microsoft JhengHei, PingFang SC, sans-serif" font-size="28" font-weight="650" fill="#252b2d">02  二層平面</text>
+    <text x="970" y="238" font-family="Avenir Next, PingFang TC, Microsoft JhengHei, PingFang SC, sans-serif" font-size="15" fill="#737a7c">主體 15.0 m × 12.0 m · 三臥雙衛 · 西側屋頂露台</text>
 
     <g transform="translate(1662 218)">
       <path d="M0 24V-20M0-20L-8-4M0-20L8-4" fill="none" stroke="#252b2d" stroke-width="2.3"/>
@@ -222,14 +222,14 @@
     <circle cx="1644" cy="689" r="16" class="soft"/>
 
     <!-- labels -->
-    <text x="1057" y="518" class="label">屋顶露台</text>
-    <text x="1209" y="329" class="label">公卫</text>
-    <text x="1209" y="548" class="label">次卧 1</text>
-    <text x="1209" y="719" class="label">次卧 2</text>
+    <text x="1057" y="518" class="label">屋頂露台</text>
+    <text x="1209" y="329" class="label">公衛</text>
+    <text x="1209" y="548" class="label">次臥 1</text>
+    <text x="1209" y="719" class="label">次臥 2</text>
     <text x="1354" y="390" class="small">走廊</text>
-    <text x="1378" y="536" class="small" transform="rotate(90 1378 536)">挑空 / 楼梯</text>
-    <text x="1550" y="449" class="label">主卫</text>
-    <text x="1550" y="727" class="label">主卧</text>
+    <text x="1378" y="536" class="small" transform="rotate(90 1378 536)">挑空 / 樓梯</text>
+    <text x="1550" y="449" class="label">主衛</text>
+    <text x="1550" y="727" class="label">主臥</text>
 
     <!-- dimensions -->
     <path d="M1114 263H1684" class="dim"/>
@@ -239,18 +239,18 @@
 
     <!-- legend -->
     <g transform="translate(1000 835)">
-      <text x="0" y="0" font-family="Avenir Next, PingFang SC, sans-serif" font-size="18" font-weight="650" fill="#303638">材质图例</text>
+      <text x="0" y="0" font-family="Avenir Next, PingFang TC, Microsoft JhengHei, PingFang SC, sans-serif" font-size="18" font-weight="650" fill="#303638">材質圖例</text>
       <rect x="0" y="24" width="36" height="22" fill="url(#wood)" stroke="#c3b6a7"/><text x="48" y="41" class="micro">木地板</text>
-      <rect x="140" y="24" width="36" height="22" fill="url(#stone)" stroke="#c3c6c3"/><text x="188" y="41" class="micro">石材湿区</text>
-      <rect x="300" y="24" width="36" height="22" fill="url(#deck)" stroke="#b4a28c"/><text x="348" y="41" class="micro">户外木平台</text>
+      <rect x="140" y="24" width="36" height="22" fill="url(#stone)" stroke="#c3c6c3"/><text x="188" y="41" class="micro">石材濕區</text>
+      <rect x="300" y="24" width="36" height="22" fill="url(#deck)" stroke="#b4a28c"/><text x="348" y="41" class="micro">戶外木平台</text>
       <line x1="475" y1="35" x2="525" y2="35" class="glass"/><text x="568" y="41" class="micro" text-anchor="middle">落地玻璃</text>
     </g>
 
     <g transform="translate(1000 940)">
-      <text x="0" y="0" font-family="Avenir Next, PingFang SC, sans-serif" font-size="18" font-weight="650" fill="#303638">设计要点</text>
-      <circle cx="8" cy="36" r="3.5" fill="#616a6c"/><text x="22" y="42" class="micro">公共空间连续朝南展开，通向露台与泳池</text>
-      <circle cx="8" cy="72" r="3.5" fill="#616a6c"/><text x="22" y="78" class="micro">楼梯与挑空位于平面核心，连接两层采光廊道</text>
-      <circle cx="8" cy="108" r="3.5" fill="#616a6c"/><text x="22" y="114" class="micro">卧室层沿东西两翼分区，主卧形成独立套房</text>
+      <text x="0" y="0" font-family="Avenir Next, PingFang TC, Microsoft JhengHei, PingFang SC, sans-serif" font-size="18" font-weight="650" fill="#303638">設計要點</text>
+      <circle cx="8" cy="36" r="3.5" fill="#616a6c"/><text x="22" y="42" class="micro">公共空間連續朝南展開，通向露台與泳池</text>
+      <circle cx="8" cy="72" r="3.5" fill="#616a6c"/><text x="22" y="78" class="micro">樓梯與挑空位於平面核心，連接兩層採光廊道</text>
+      <circle cx="8" cy="108" r="3.5" fill="#616a6c"/><text x="22" y="114" class="micro">臥室層沿東西兩翼分區，主臥形成獨立套房</text>
     </g>
 
     <text x="1000" y="1093" class="micro">比例示意  0</text>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-Hant-TW">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>溪谷別墅 · 實時建築模型</title>
+<title>溪谷別墅 · 即時建築模型</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d0f11'/%3E%3Crect x='6' y='14' width='20' height='11' fill='%23e8b877'/%3E%3Crect x='6' y='8' width='13' height='6' fill='%23b9b3a7'/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="style.css" />
 <script type="importmap">
@@ -21,47 +21,47 @@
 <div id="loader">
   <div class="lwrap">
     <div class="lbar"><i></i></div>
-    <div class="ltxt">正在构建几何模型…</div>
+    <div class="ltxt">正在構建幾何模型…</div>
   </div>
 </div>
 
 <aside id="plan">
-  <div class="plabel"><span>户型图</span><em>点击收起</em></div>
-  <img src="assets/villa-ravine-floor-plan.png" alt="溪谷别墅一层与二层户型图" />
+  <div class="plabel"><span>戶型圖</span><em>點擊收起</em></div>
+  <img src="assets/villa-ravine-floor-plan.png" alt="溪谷別墅一層與二層戶型圖" />
 </aside>
-<button id="planbtn" hidden>户型图</button>
+<button id="planbtn" hidden>戶型圖</button>
 
 <header id="titlecard">
-  <div class="kicker">实时建筑模型 · 程序化几何</div>
-  <h1>溪谷别墅</h1>
-  <p>一座面向庭院的双层住宅：清水混凝土基座、悬挑木结构起居层，以及通向南向露台的落地玻璃。</p>
+  <div class="kicker">即時建築模型 · 程式化幾何</div>
+  <h1>溪谷別墅</h1>
+  <p>一座面向庭院的雙層住宅：清水混凝土基座、懸挑木結構起居層，以及通向南向露台的落地玻璃。</p>
   <div class="meta">
     <span><b id="stat-tris">—</b> 三角面</span>
     <span><b id="stat-parts">—</b> 部件</span>
-    <span><b id="stat-fps">—</b> 帧/秒</span>
+    <span><b id="stat-fps">—</b> 幀/秒</span>
   </div>
 </header>
 
 <nav id="views">
-  <div class="grp-label">视角</div>
+  <div class="grp-label">視角</div>
   <div class="btns" id="viewbtns"></div>
 </nav>
 
 <section id="panel">
   <label class="row">
-    <span>时段</span>
+    <span>時段</span>
     <input id="tod" type="range" min="0" max="1" step="0.001" value="0.28" />
     <em id="todlabel">清晨</em>
   </label>
   <div class="row toggles">
-    <button data-t="roof" class="on">屋顶</button>
-    <button data-t="walls" class="on">二层</button>
+    <button data-t="roof" class="on">屋頂</button>
+    <button data-t="walls" class="on">二層</button>
     <button data-t="furn" class="on">家具</button>
-    <button data-t="veg" class="on">景观</button>
-    <button data-t="doors" class="on">推拉门</button>
-    <button data-t="spin">自动环绕</button>
+    <button data-t="veg" class="on">景觀</button>
+    <button data-t="doors" class="on">推拉門</button>
+    <button data-t="spin">自動環繞</button>
   </div>
-  <div class="hint">拖拽环绕 · 滚轮缩放 · 右键拖拽平移</div>
+  <div class="hint">拖曳環繞 · 滾輪縮放 · 右鍵拖曳平移</div>
 </section>
 
 <a href="./villa.html?artist=icy" id="enter-gallery">進入 ICY 別墅畫廊 →</a>

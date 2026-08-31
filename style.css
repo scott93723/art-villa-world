@@ -37,7 +37,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
 .toggles button.on{opacity:1;background:rgba(232,184,119,.16);border-color:rgba(232,184,119,.4)}
 .hint{font-size:9px;letter-spacing:.13em;text-transform:uppercase;opacity:.32}
 
-/* 平面图卡片。图纸本身是浅色的，压在深色玻璃底上就是「钉在墙上的一张图」。 */
+/* 平面圖卡片。圖紙本身是淺色的，壓在深色玻璃底上就是「釘在牆上的一張圖」。 */
 #plan{position:fixed;top:24px;right:26px;width:clamp(210px,21vw,320px);cursor:pointer;z-index:5;
   background:rgba(16,18,20,.5);backdrop-filter:blur(14px);
   border:1px solid rgba(255,255,255,.08);padding:10px 10px 9px;
