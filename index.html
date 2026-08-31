@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Art Villa World · 藝術家村</title>
+  <title>溪谷別墅 · 實時建築模型</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       width: 100%; height: 100%;
       overflow: hidden;
-      background: #0a0a0f;
+      background: #87CEEB;
       font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
       color: #f2f2f2;
     }
@@ -22,45 +22,200 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 28px 34px;
+      padding: 24px;
     }
-    #ui h1 {
-      font-size: clamp(2rem, 5vw, 4rem);
-      font-weight: 200;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      text-shadow: 0 4px 30px rgba(0,0,0,0.6);
-    }
-    #ui h1 span {
-      display: block;
-      font-size: 0.32em;
-      letter-spacing: 0.42em;
-      color: #aaa;
-      margin-top: 0.6em;
-    }
-    #ui .meta {
-      font-size: 0.85rem;
-      color: #999;
-      letter-spacing: 0.08em;
+    .header {
       display: flex;
-      gap: 28px;
-      align-items: flex-end;
+      justify-content: space-between;
+      align-items: flex-start;
     }
-    #ui .meta strong { color: #fff; font-weight: 400; }
+    .title-block h1 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 200;
+      letter-spacing: 0.08em;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+      color: #fff;
+    }
+    .title-block p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.85);
+      margin-top: 8px;
+      letter-spacing: 0.05em;
+    }
+    .floor-plan {
+      width: 220px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 8px;
+      padding: 12px;
+      pointer-events: auto;
+      backdrop-filter: blur(8px);
+    }
+    .floor-plan-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .floor-plan-header span {
+      font-size: 0.8rem;
+      color: #ccc;
+    }
+    .floor-plan-header button {
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .floor-plan-content {
+      font-size: 0.75rem;
+      color: #aaa;
+      line-height: 1.6;
+    }
+    .floor-plan-content img {
+      width: 100%;
+      border-radius: 4px;
+      margin-top: 8px;
+      background: #fff;
+    }
+    .left-panel {
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .left-panel button {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #ddd;
+      padding: 10px 16px;
+      text-align: left;
+      font-family: inherit;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 140px;
+    }
+    .left-panel button:hover {
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+    }
+    .left-panel button.active {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border-left: 3px solid #ff6b9d;
+    }
+    .right-panel {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 200px;
+    }
+    .panel-section {
+      background: rgba(0,0,0,0.4);
+      border-radius: 8px;
+      padding: 12px;
+      backdrop-filter: blur(8px);
+    }
+    .panel-section h3 {
+      font-size: 0.75rem;
+      color: #aaa;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .time-slider {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .time-slider input {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      outline: none;
+    }
+    .time-slider input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .time-value {
+      font-size: 0.8rem;
+      color: #fff;
+      min-width: 40px;
+    }
+    .layer-toggles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .layer-toggles button {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #ddd;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .layer-toggles button:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .layer-toggles button.active {
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+    }
+    .auto-orbit {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #ccc;
+    }
+    .auto-orbit input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+    .controls-hint {
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.1em;
+    }
     #loading {
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       font-size: 0.9rem;
       letter-spacing: 0.2em;
-      color: #888;
+      color: #666;
       pointer-events: none;
       transition: opacity 0.4s ease;
     }
     #portal-hint {
       position: absolute;
       top: 50%; left: 50%;
-      transform: translate(-50%, 60px);
+      transform: translate(-50%, 80px);
       font-size: 0.9rem;
       letter-spacing: 0.15em;
       color: #ffd0e0;
@@ -76,16 +231,66 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@200;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="loading">正在建構藝術家村…</div>
+  <div id="loading">正在建構溪谷別墅…</div>
   <div id="portal-hint">點擊進入 ICY 別墅</div>
   <canvas id="canvas"></canvas>
   <div id="ui">
-    <div>
-      <h1>Art Villa World<span>溪谷別墅 · 藝術家畫廊宇宙</span></h1>
+    <div class="header">
+      <div class="title-block">
+        <h1>溪谷別墅</h1>
+        <p>實時建築模型 · 程序化幾何 · 製作者 WDL</p>
+      </div>
+      <div class="floor-plan">
+        <div class="floor-plan-header">
+          <span>戶型圖</span>
+          <button id="toggle-floor-plan">−</button>
+        </div>
+        <div class="floor-plan-content" id="floor-plan-content">
+          <div>Villa Ravine 戶型設計</div>
+          <div>雙層住宅 · 混凝土基座 · 懸挑木結構</div>
+        </div>
+      </div>
     </div>
-    <div class="meta">
-      <div>已入住藝術家<br><strong>1 位</strong></div>
-      <div>操作方式<br><strong>拖拽環繞 · 滾輪縮放 · 點擊別墅進入</strong></div>
+    <div class="controls-hint">拖拽環繞 · 滾輪縮放 · 右鍵拖拽平移</div>
+  </div>
+
+  <div class="left-panel" id="camera-positions">
+    <button data-pos="0">01 入口庭院</button>
+    <button data-pos="1">02 西南花園</button>
+    <button data-pos="2">03 南立面</button>
+    <button data-pos="3">04 露台層</button>
+    <button data-pos="4">05 客廳</button>
+    <button data-pos="5">06 廚房與餐廳</button>
+    <button data-pos="6">07 樓梯廳與挑空</button>
+    <button data-pos="7">08 主臥</button>
+    <button data-pos="8">09 屋頂露台</button>
+    <button data-pos="9">10 細節 · 材料交接</button>
+    <button data-pos="10">11 鳥瞰</button>
+  </div>
+
+  <div class="right-panel">
+    <div class="panel-section">
+      <h3>時段</h3>
+      <div class="time-slider">
+        <span class="time-value" id="time-label">清晨</span>
+        <input type="range" id="time-slider" min="0" max="100" value="20">
+      </div>
+    </div>
+    <div class="panel-section">
+      <h3>圖層</h3>
+      <div class="layer-toggles" id="layer-toggles">
+        <button data-layer="roof" class="active">屋頂</button>
+        <button data-layer="second-floor" class="active">二層</button>
+        <button data-layer="furniture" class="active">家具</button>
+        <button data-layer="landscape" class="active">景觀</button>
+        <button data-layer="sliding-door" class="active">推拉門</button>
+      </div>
+    </div>
+    <div class="panel-section">
+      <label class="auto-orbit">
+        <input type="checkbox" id="auto-orbit">
+        <span>自動環繞</span>
+      </label>
     </div>
   </div>
 

@@ -5,11 +5,17 @@ import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUnifo
 const canvas = document.getElementById('canvas');
 const loading = document.getElementById('loading');
 const portalHint = document.getElementById('portal-hint');
+const cameraButtons = document.querySelectorAll('#camera-positions button');
+const timeSlider = document.getElementById('time-slider');
+const timeLabel = document.getElementById('time-label');
+const layerButtons = document.querySelectorAll('#layer-toggles button');
+const autoOrbitCheck = document.getElementById('auto-orbit');
+const toggleFloorPlan = document.getElementById('toggle-floor-plan');
+const floorPlanContent = document.getElementById('floor-plan-content');
 
 const scene = new THREE.Scene();
-// Bright daytime sky - blue and clear
 scene.background = new THREE.Color(0x87CEEB);
-scene.fog = new THREE.FogExp2(0xB0D4F0, 0.005);
+scene.fog = new THREE.FogExp2(0xB0D4F0, 0.004);
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 300);
 camera.position.set(0, 4, 20);
@@ -31,9 +37,11 @@ controls.dampingFactor = 0.05;
 controls.maxPolarAngle = Math.PI / 1.75;
 controls.minDistance = 6;
 controls.maxDistance = 40;
+controls.autoRotate = false;
+controls.autoRotateSpeed = 0.5;
 
 // ============================================================
-// MATERIALS - natural daytime colors
+// MATERIALS
 // ============================================================
 const concreteMat = new THREE.MeshStandardMaterial({ color: 0x9a9a9a, roughness: 0.85 });
 const darkConcreteMat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.9 });
@@ -56,7 +64,18 @@ const plantGreen = new THREE.MeshStandardMaterial({ color: 0x4a8a3a, roughness: 
 const warmLight = new THREE.MeshStandardMaterial({ color: 0xfff0d0, emissive: 0xfff0d0, emissiveIntensity: 1 });
 
 // ============================================================
-// DAYTIME SKY
+// LAYER GROUPS
+// ============================================================
+const layers = {
+  roof: new THREE.Group(),
+  secondFloor: new THREE.Group(),
+  furniture: new THREE.Group(),
+  landscape: new THREE.Group(),
+  slidingDoor: new THREE.Group()
+};
+
+// ============================================================
+// SKY
 // ============================================================
 function createSky() {
   const skyGeo = new THREE.SphereGeometry(200, 32, 32);
@@ -89,11 +108,12 @@ function createSky() {
     side: THREE.BackSide
   });
   const sky = new THREE.Mesh(skyGeo, skyMat);
+  sky.name = 'sky';
   scene.add(sky);
 
   // Clouds
-  const cloudMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, transparent: true, opacity: 0.8 });
-  for (let i = 0; i < 15; i++) {
+  const cloudMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, transparent: true, opacity: 0.85 });
+  for (let i = 0; i < 12; i++) {
     const cloud = new THREE.Group();
     const puffCount = 3 + Math.floor(Math.random() * 3);
     for (let j = 0; j < puffCount; j++) {
@@ -105,7 +125,7 @@ function createSky() {
       cloud.add(puff);
     }
     cloud.position.set((Math.random() - 0.5) * 150, 30 + Math.random() * 30, (Math.random() - 0.5) * 150);
-    scene.add(cloud);
+    layers.landscape.add(cloud);
   }
 }
 
@@ -127,27 +147,27 @@ function createTerrain() {
   terrain.rotation.x = -Math.PI / 2;
   terrain.position.y = -0.1;
   terrain.receiveShadow = true;
-  scene.add(terrain);
+  layers.landscape.add(terrain);
 
-  // Valley rocks
-  for (let i = 0; i < 35; i++) {
+  // Rocks
+  for (let i = 0; i < 30; i++) {
     const angle = Math.random() * Math.PI * 2;
     const dist = 20 + Math.random() * 40;
     const rock = new THREE.Mesh(
-      new THREE.DodecahedronGeometry(1 + Math.random() * 2.5, 1),
+      new THREE.DodecahedronGeometry(1 + Math.random() * 2, 1),
       rockMat
     );
     rock.position.set(Math.cos(angle) * dist, Math.random() * 1.5, Math.sin(angle) * dist);
     rock.rotation.set(Math.random(), Math.random(), Math.random());
     rock.castShadow = true;
     rock.receiveShadow = true;
-    scene.add(rock);
+    layers.landscape.add(rock);
   }
 
   // Trees
   const treeTrunkMat = new THREE.MeshStandardMaterial({ color: 0x6a5a42, roughness: 0.9 });
   const treeLeafMat = new THREE.MeshStandardMaterial({ color: 0x4a8a3a, roughness: 0.85 });
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 18; i++) {
     const angle = Math.random() * Math.PI * 2;
     const dist = 18 + Math.random() * 40;
     const tree = new THREE.Group();
@@ -171,19 +191,19 @@ function createTerrain() {
 
     tree.position.set(Math.cos(angle) * dist, 0, Math.sin(angle) * dist);
     tree.rotation.y = Math.random() * Math.PI * 2;
-    scene.add(tree);
+    layers.landscape.add(tree);
   }
 
   // Tall grass
   const grassBladeMat = new THREE.MeshStandardMaterial({ color: 0x6a9a4a, roughness: 0.9 });
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 45; i++) {
     const patch = new THREE.Mesh(
       new THREE.ConeGeometry(0.4, 1.2 + Math.random() * 1.5, 4),
       grassBladeMat
     );
     patch.position.set((Math.random() - 0.5) * 45, 0.6, (Math.random() - 0.5) * 45);
     patch.castShadow = true;
-    scene.add(patch);
+    layers.landscape.add(patch);
   }
 }
 
@@ -193,7 +213,6 @@ function createTerrain() {
 function createPool() {
   const pool = new THREE.Group();
 
-  // Pool basin
   const basin = new THREE.Mesh(
     new THREE.BoxGeometry(11, 1.6, 6),
     new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.85 })
@@ -203,7 +222,6 @@ function createPool() {
   basin.receiveShadow = true;
   pool.add(basin);
 
-  // Water surface
   const water = new THREE.Mesh(
     new THREE.PlaneGeometry(10.6, 5.6),
     poolWaterMat
@@ -213,19 +231,16 @@ function createPool() {
   water.name = 'pool-water';
   pool.add(water);
 
-  // Pool glow
   const poolGlow = new THREE.PointLight(0x66bbdd, 1.5, 10);
   poolGlow.position.y = 1.3;
   pool.add(poolGlow);
 
-  // Underwater lights
   for (let i = 0; i < 4; i++) {
     const light = new THREE.PointLight(0x88ccff, 0.8, 5);
     light.position.set(-4 + i * 2.5, 1.1, 0);
     pool.add(light);
   }
 
-  // Pool deck
   const deck = new THREE.Mesh(
     new THREE.BoxGeometry(13, 0.15, 8),
     new THREE.MeshStandardMaterial({ color: 0xc0b0a0, roughness: 0.85 })
@@ -256,13 +271,12 @@ function createPool() {
     pool.add(chair);
   }
 
-  // Side table
   const table = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.05, 16), furnitureWood);
   table.position.set(0, 0.35, 3.5);
   table.castShadow = true;
   pool.add(table);
 
-  // Potted plants by pool
+  // Potted plants
   for (let i = 0; i < 3; i++) {
     const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 0.4, 8), new THREE.MeshStandardMaterial({ color: 0x9a7a6a }));
     pot.position.set(-5 + i * 5, 0.2, 4.5);
@@ -274,68 +288,66 @@ function createPool() {
   }
 
   pool.position.set(0, 0, 14);
-  scene.add(pool);
-  return water;
+  layers.landscape.add(pool);
 }
 
 // ============================================================
-// VILLA STRUCTURE
+// VILLA
 // ============================================================
 function createVilla() {
   const villa = new THREE.Group();
 
-  // Concrete base
+  // Ground floor base
   const base = new THREE.Mesh(new THREE.BoxGeometry(16, 4, 10), concreteMat);
   base.position.y = 2;
   base.castShadow = true;
   base.receiveShadow = true;
   villa.add(base);
 
-  // Ground floor glass
+  // Ground floor glass (sliding door layer)
   const groundGlass = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.2), glassMat);
   groundGlass.position.set(0, 2.4, 5.01);
-  villa.add(groundGlass);
+  layers.slidingDoor.add(groundGlass);
 
-  // Ground floor interior
-  createGroundFloorInterior(villa);
+  // Ground floor interior (furniture layer)
+  createGroundFloorInterior();
 
-  // Wooden upper structure
+  // Upper floor structure (second floor layer)
   const upper = new THREE.Mesh(new THREE.BoxGeometry(15, 3.5, 9), woodMat);
   upper.position.y = 5.75;
   upper.castShadow = true;
   upper.receiveShadow = true;
-  villa.add(upper);
+  layers.secondFloor.add(upper);
 
-  // Vertical wood slats
+  // Wood slats
   for (let i = 0; i < 28; i++) {
     const slat = new THREE.Mesh(new THREE.BoxGeometry(0.08, 3.5, 0.15), woodSlatMat);
     slat.position.set(-7.3 + i * 0.55, 5.75, 4.6);
-    villa.add(slat);
+    layers.secondFloor.add(slat);
   }
 
-  // Upper glass sections
+  // Upper glass
   const upperGlassLeft = new THREE.Mesh(new THREE.PlaneGeometry(4, 2.8), glassMat);
   upperGlassLeft.position.set(-4, 5.75, 4.61);
-  villa.add(upperGlassLeft);
+  layers.secondFloor.add(upperGlassLeft);
 
   const upperGlassRight = new THREE.Mesh(new THREE.PlaneGeometry(5, 2.8), glassMat);
   upperGlassRight.position.set(3.5, 5.75, 4.61);
-  villa.add(upperGlassRight);
+  layers.secondFloor.add(upperGlassRight);
 
-  // Upper floor interior
-  createUpperFloorInterior(villa);
+  // Upper interior (furniture layer)
+  createUpperFloorInterior();
 
-  // Roof
+  // Roof (roof layer)
   const roof = new THREE.Mesh(new THREE.BoxGeometry(17, 0.4, 11), darkConcreteMat);
   roof.position.y = 7.7;
   roof.castShadow = true;
-  villa.add(roof);
+  layers.roof.add(roof);
 
-  // Roof slats
   for (let i = 0; i < 32; i++) {
     const slat = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.1, 11.2), woodSlatMat);
     slat.position.set(-7.8 + i * 0.5, 7.75, 0);
-    villa.add(slat);
+    layers.roof.add(slat);
   }
 
   // Canopy
@@ -344,7 +356,6 @@ function createVilla() {
   canopy.castShadow = true;
   villa.add(canopy);
 
-  // Canopy supports
   const support1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 4.2, 8), darkConcreteMat);
   support1.position.set(-5.5, 2.1, 6);
   villa.add(support1);
@@ -353,21 +364,19 @@ function createVilla() {
   support2.position.set(-0.5, 2.1, 6);
   villa.add(support2);
 
-  // External staircase
+  // Staircase
   createStaircase(villa);
 
-  // Entrance portal
+  // Portal
   const portal = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 2.8), portalMat);
   portal.position.set(2, 2.4, 5.02);
   portal.name = 'portal';
   villa.add(portal);
 
-  // Portal frame
   const portalFrame = new THREE.Mesh(new THREE.BoxGeometry(2.0, 3.0, 0.1), darkConcreteMat);
   portalFrame.position.set(2, 2.4, 5.0);
   villa.add(portalFrame);
 
-  // Entrance step
   const step = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.2, 1.5), concreteMat);
   step.position.set(2, 0.1, 5.5);
   step.receiveShadow = true;
@@ -378,17 +387,17 @@ function createVilla() {
   path.rotation.x = -Math.PI / 2;
   path.position.set(2, 0.02, 12);
   path.receiveShadow = true;
-  villa.add(path);
+  layers.landscape.add(path);
 
   // Path lights
   for (let i = 0; i < 6; i++) {
     const light = new THREE.PointLight(0xfff0d0, 0.6, 6);
     light.position.set(3.5, 0.4, 6 + i * 2);
-    villa.add(light);
+    layers.landscape.add(light);
 
     const lightMesh = new THREE.Mesh(new THREE.SphereGeometry(0.08), warmLight);
     lightMesh.position.copy(light.position);
-    villa.add(lightMesh);
+    layers.landscape.add(lightMesh);
   }
 
   // Villa label
@@ -399,7 +408,7 @@ function createVilla() {
   ctx.fillStyle = '#ffffff';
   ctx.font = '700 44px "Noto Sans TC", sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('ICY 別墅', 256, 80);
+  ctx.fillText('溪谷別墅', 256, 80);
   const labelTex = new THREE.CanvasTexture(labelCanvas);
   labelTex.colorSpace = THREE.SRGBColorSpace;
   const label = new THREE.Mesh(
@@ -410,23 +419,26 @@ function createVilla() {
   villa.add(label);
 
   scene.add(villa);
+
+  // Add all layer groups to scene
+  Object.values(layers).forEach(layer => scene.add(layer));
+
   return villa;
 }
 
 // ============================================================
 // INTERIOR
 // ============================================================
-function createGroundFloorInterior(villa) {
+function createGroundFloorInterior() {
   const interior = new THREE.Group();
 
-  // Daylight interior lights
   for (let i = 0; i < 6; i++) {
     const light = new THREE.PointLight(0xfff0e0, 0.8, 10);
     light.position.set(-5 + i * 2.5, 3.8, 3);
     interior.add(light);
   }
 
-  // Living room sofa
+  // Sofa
   const sofa = new THREE.Group();
   const sofaBase = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.4, 1), furnitureWhite);
   sofaBase.position.y = 0.2;
@@ -444,12 +456,10 @@ function createGroundFloorInterior(villa) {
   sofa.rotation.y = 0.2;
   interior.add(sofa);
 
-  // Coffee table
   const table = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.05, 0.6), furnitureWood);
   table.position.set(-3.5, 0.35, 1);
   interior.add(table);
 
-  // Dining table
   const diningTable = new THREE.Mesh(new THREE.BoxGeometry(2, 0.08, 1), furnitureWood);
   diningTable.position.set(3, 0.75, 2.5);
   interior.add(diningTable);
@@ -460,19 +470,16 @@ function createGroundFloorInterior(villa) {
     interior.add(chair);
   }
 
-  // Kitchen counter
   const counter = new THREE.Mesh(new THREE.BoxGeometry(4, 0.9, 0.6), darkConcreteMat);
   counter.position.set(5, 0.45, 4);
   interior.add(counter);
 
-  // Plants
   for (let i = 0; i < 4; i++) {
     const plant = new THREE.Mesh(new THREE.ConeGeometry(0.4, 1 + Math.random() * 0.8, 4), plantGreen);
     plant.position.set(-6 + i * 4, 0.5, 3.5);
     interior.add(plant);
   }
 
-  // Wall art
   for (let i = 0; i < 3; i++) {
     const art = new THREE.Mesh(
       new THREE.PlaneGeometry(0.6, 0.8),
@@ -483,20 +490,18 @@ function createGroundFloorInterior(villa) {
   }
 
   interior.position.y = 0;
-  villa.add(interior);
+  layers.furniture.add(interior);
 }
 
-function createUpperFloorInterior(villa) {
+function createUpperFloorInterior() {
   const interior = new THREE.Group();
 
-  // Daylight interior lights
   for (let i = 0; i < 4; i++) {
     const light = new THREE.PointLight(0xfff0e0, 0.7, 8);
     light.position.set(-4 + i * 3, 7.2, 3);
     interior.add(light);
   }
 
-  // Bed
   const bed = new THREE.Group();
   const bedBase = new THREE.Mesh(new THREE.BoxGeometry(2, 0.3, 2.5), furnitureWhite);
   bedBase.position.y = 0.15;
@@ -507,22 +512,18 @@ function createUpperFloorInterior(villa) {
   bed.position.set(-4, 0, 2.5);
   interior.add(bed);
 
-  // Desk
   const desk = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.75, 0.6), furnitureWood);
   desk.position.set(3, 0.375, 2.5);
   interior.add(desk);
 
-  // Chair
   const chair = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.9, 0.5), furnitureWhite);
   chair.position.set(3, 0.45, 1.5);
   interior.add(chair);
 
-  // Bookshelf
   const shelf = new THREE.Mesh(new THREE.BoxGeometry(1.5, 2.5, 0.3), furnitureWood);
   shelf.position.set(5.5, 1.25, 3.5);
   interior.add(shelf);
 
-  // Plants
   for (let i = 0; i < 2; i++) {
     const plant = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.8 + Math.random() * 0.5, 4), plantGreen);
     plant.position.set(-6 + i * 10, 0.4, 3.5);
@@ -530,7 +531,7 @@ function createUpperFloorInterior(villa) {
   }
 
   interior.position.y = 4;
-  villa.add(interior);
+  layers.furniture.add(interior);
 }
 
 function createStaircase(villa) {
@@ -554,33 +555,131 @@ function createStaircase(villa) {
 }
 
 // ============================================================
-// DAYTIME LIGHTING
+// LIGHTING
 // ============================================================
-function setupLighting() {
-  // Bright daylight ambient
-  const ambient = new THREE.AmbientLight(0xffffff, 0.9);
-  scene.add(ambient);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+scene.add(ambientLight);
 
-  // Strong midday sun
-  const sun = new THREE.DirectionalLight(0xfff8f0, 2.0);
-  sun.position.set(20, 40, 20);
-  sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
-  sun.shadow.camera.near = 0.5;
-  sun.shadow.camera.far = 100;
-  sun.shadow.camera.left = -30; sun.shadow.camera.right = 30;
-  sun.shadow.camera.top = 30; sun.shadow.camera.bottom = -30;
-  scene.add(sun);
+const sunLight = new THREE.DirectionalLight(0xfff8f0, 2.0);
+sunLight.position.set(20, 40, 20);
+sunLight.castShadow = true;
+sunLight.shadow.mapSize.set(2048, 2048);
+sunLight.shadow.camera.near = 0.5;
+sunLight.shadow.camera.far = 100;
+sunLight.shadow.camera.left = -30; sunLight.shadow.camera.right = 30;
+sunLight.shadow.camera.top = 30; sunLight.shadow.camera.bottom = -30;
+scene.add(sunLight);
 
-  // Sky fill
-  const fill = new THREE.DirectionalLight(0xb0d4f0, 0.5);
-  fill.position.set(-20, 30, -20);
-  scene.add(fill);
+const fillLight = new THREE.DirectionalLight(0xb0d4f0, 0.5);
+fillLight.position.set(-20, 30, -20);
+scene.add(fillLight);
 
-  // Hemisphere light
-  const hemi = new THREE.HemisphereLight(0x87CEEB, 0x5a8a4a, 0.5);
-  scene.add(hemi);
+const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x5a8a4a, 0.5);
+scene.add(hemiLight);
+
+// ============================================================
+// TIME OF DAY
+// ============================================================
+const timePresets = [
+  { label: '清晨', ambient: 0.7, sun: 1.5, sunColor: 0xffd0a0, sky: 0x87CEEB, fog: 0xB0D4F0, exposure: 1.1 },
+  { label: '正午', ambient: 0.9, sun: 2.0, sunColor: 0xfff8f0, sky: 0x87CEEB, fog: 0xB0D4F0, exposure: 1.2 },
+  { label: '黃昏', ambient: 0.6, sun: 1.8, sunColor: 0xffa54a, sky: 0xff8a3a, fog: 0xff9a4a, exposure: 1.3 },
+  { label: '夜晚', ambient: 0.2, sun: 0.3, sunColor: 0x4a6aaa, sky: 0x1a1a2e, fog: 0x1a1a2e, exposure: 1.0 }
+];
+
+function updateTimeOfDay(value) {
+  const t = value / 100;
+  let preset;
+
+  if (t < 0.33) preset = timePresets[0];
+  else if (t < 0.66) preset = timePresets[1];
+  else if (t < 0.9) preset = timePresets[2];
+  else preset = timePresets[3];
+
+  timeLabel.textContent = preset.label;
+  ambientLight.intensity = preset.ambient;
+  sunLight.intensity = preset.sun;
+  sunLight.color.set(preset.sunColor);
+  scene.background.set(preset.sky);
+  scene.fog.color.set(preset.fog);
+  renderer.toneMappingExposure = preset.exposure;
 }
+
+timeSlider.addEventListener('input', (e) => updateTimeOfDay(parseInt(e.target.value)));
+
+// ============================================================
+// LAYER TOGGLES
+// ============================================================
+layerButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const layerName = button.dataset.layer;
+    const layer = layers[layerName];
+    layer.visible = !layer.visible;
+    button.classList.toggle('active');
+  });
+});
+
+// ============================================================
+// CAMERA POSITIONS
+// ============================================================
+const cameraPositions = [
+  { pos: [0, 3, 18], target: [0, 2, 0] },       // 01 入口庭院
+  { pos: [-15, 4, 10], target: [0, 3, 0] },      // 02 西南花園
+  { pos: [0, 4, 25], target: [0, 3, 0] },        // 03 南立面
+  { pos: [0, 5, 10], target: [0, 4, 0] },        // 04 露台層
+  { pos: [-4, 2, 2], target: [-4, 1.5, 0] },     // 05 客廳
+  { pos: [4, 2, 2], target: [4, 1, 0] },         // 06 廚房與餐廳
+  { pos: [-6.5, 3, 6], target: [-6.5, 2, 4] },   // 07 樓梯廳與挑空
+  { pos: [-4, 6, 2], target: [-4, 5.5, 0] },     // 08 主臥
+  { pos: [0, 8.5, 0], target: [0, 7.5, 0] },     // 09 屋頂露台
+  { pos: [2, 2.5, 7], target: [2, 2, 5] },       // 10 細節·材料交接
+  { pos: [0, 35, 0], target: [0, 0, 0] }         // 11 鳥瞰
+];
+
+let currentCameraIndex = -1;
+let cameraTween = null;
+
+function goToCameraPosition(index) {
+  if (index === currentCameraIndex) return;
+  currentCameraIndex = index;
+
+  const targetPos = new THREE.Vector3(...cameraPositions[index].pos);
+  const targetLook = new THREE.Vector3(...cameraPositions[index].target);
+
+  cameraTween = {
+    startPos: camera.position.clone(),
+    startTarget: controls.target.clone(),
+    endPos: targetPos,
+    endTarget: targetLook,
+    progress: 0
+  };
+
+  cameraButtons.forEach((btn, i) => {
+    btn.classList.toggle('active', i === index);
+  });
+}
+
+cameraButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    goToCameraPosition(parseInt(button.dataset.pos));
+  });
+});
+
+// ============================================================
+// AUTO ORBIT
+// ============================================================
+autoOrbitCheck.addEventListener('change', (e) => {
+  controls.autoRotate = e.target.checked;
+});
+
+// ============================================================
+// FLOOR PLAN TOGGLE
+// ============================================================
+toggleFloorPlan.addEventListener('click', () => {
+  const isHidden = floorPlanContent.style.display === 'none';
+  floorPlanContent.style.display = isHidden ? 'block' : 'none';
+  toggleFloorPlan.textContent = isHidden ? '−' : '+';
+});
 
 // ============================================================
 // INTERACTION
@@ -619,6 +718,21 @@ canvas.addEventListener('click', onMouseClick);
 // ============================================================
 function animate() {
   requestAnimationFrame(animate);
+
+  // Camera tween
+  if (cameraTween) {
+    cameraTween.progress += 0.03;
+    if (cameraTween.progress >= 1) {
+      camera.position.copy(cameraTween.endPos);
+      controls.target.copy(cameraTween.endTarget);
+      cameraTween = null;
+    } else {
+      const t = easeInOutCubic(cameraTween.progress);
+      camera.position.lerpVectors(cameraTween.startPos, cameraTween.endPos, t);
+      controls.target.lerpVectors(cameraTween.startTarget, cameraTween.endTarget, t);
+    }
+  }
+
   controls.update();
 
   const water = scene.getObjectByName('pool-water');
@@ -627,6 +741,10 @@ function animate() {
   }
 
   renderer.render(scene, camera);
+}
+
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
 window.addEventListener('resize', () => {
@@ -643,7 +761,7 @@ function init() {
   createTerrain();
   createPool();
   createVilla();
-  setupLighting();
+  updateTimeOfDay(20);
 
   loading.style.opacity = '0';
   setTimeout(() => loading.remove(), 500);
