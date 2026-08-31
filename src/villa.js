@@ -9,6 +9,9 @@ const artInfo = document.getElementById('art-info');
 const closeInfo = document.getElementById('close-info');
 const buyBtn = document.getElementById('buy-btn');
 const backBtn = document.getElementById('back-btn');
+const tourPrev = document.getElementById('tour-prev');
+const tourNext = document.getElementById('tour-next');
+const tourToggle = document.getElementById('tour-toggle');
 const positionInfo = document.getElementById('position-info');
 const villaTitle = document.getElementById('villa-title');
 const villaSubtitle = document.getElementById('villa-subtitle');
@@ -52,6 +55,10 @@ const direction = new THREE.Vector3();
 const speed = 4;
 
 canvas.addEventListener('click', () => {
+  if (tourActive) {
+    pauseTour();
+    return;
+  }
   controls.lock();
 });
 
@@ -61,7 +68,9 @@ const onKeyDown = (e) => {
     case 'KeyS': moveBackward = true; break;
     case 'KeyA': moveLeft = true; break;
     case 'KeyD': moveRight = true; break;
+    default: return;
   }
+  if (tourActive) pauseTour();
 };
 
 const onKeyUp = (e) => {
@@ -342,16 +351,107 @@ function updatePositionInfo() {
   positionInfo.textContent = `位置: ${area}`;
 }
 
+// Auto tour — dwell on each artwork, then ease to the next
+const DWELL_TIME = 3.5;
+const TRAVEL_TIME = 2.0;
+let tourActive = false;
+let tourIndex = 0;
+let tourPhase = 'travel'; // 'travel' | 'dwell'
+let tourPhaseTime = 0;
+let tourFrom = null;
+let tourTo = null;
+const currentTarget = new THREE.Vector3(0, 1.8, 0);
+
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+function artworkView(art) {
+  const { x, z, ry } = art.position;
+  const nx = Math.sin(ry);
+  const nz = Math.cos(ry);
+  return {
+    pos: new THREE.Vector3(x + nx * 2.2, 1.7, z + nz * 2.2),
+    target: new THREE.Vector3(x, 1.8, z)
+  };
+}
+
+function updateTourInfo() {
+  positionInfo.textContent = `${tourIndex + 1} / ${artworks.length} · ${artworks[tourIndex].title}`;
+}
+
+function beginTravelTo(index) {
+  tourFrom = { pos: camera.position.clone(), target: currentTarget.clone() };
+  tourTo = artworkView(artworks[index]);
+  tourPhase = 'travel';
+  tourPhaseTime = 0;
+  updateTourInfo();
+}
+
+function startTour(index = 0) {
+  tourActive = true;
+  tourIndex = index;
+  if (controls.isLocked) controls.unlock();
+  tourToggle.textContent = '⏸ 暫停導覽';
+  beginTravelTo(tourIndex);
+}
+
+function pauseTour() {
+  tourActive = false;
+  tourToggle.textContent = '▶ 自動導覽';
+}
+
+function goToArtwork(i) {
+  tourIndex = (i + artworks.length) % artworks.length;
+  if (!tourActive) {
+    tourActive = true;
+    if (controls.isLocked) controls.unlock();
+    tourToggle.textContent = '⏸ 暫停導覽';
+  }
+  beginTravelTo(tourIndex);
+}
+
+tourToggle.addEventListener('click', () => {
+  if (tourActive) pauseTour();
+  else startTour(tourIndex);
+});
+tourPrev.addEventListener('click', () => goToArtwork(tourIndex - 1));
+tourNext.addEventListener('click', () => goToArtwork(tourIndex + 1));
+
+function updateTour(delta) {
+  tourPhaseTime += delta;
+  if (tourPhase === 'travel') {
+    const t = Math.min(tourPhaseTime / TRAVEL_TIME, 1);
+    const e = easeInOutCubic(t);
+    camera.position.lerpVectors(tourFrom.pos, tourTo.pos, e);
+    currentTarget.lerpVectors(tourFrom.target, tourTo.target, e);
+    if (t >= 1) {
+      tourPhase = 'dwell';
+      tourPhaseTime = 0;
+    }
+  } else {
+    camera.position.copy(tourTo.pos);
+    currentTarget.copy(tourTo.target);
+    if (tourPhaseTime >= DWELL_TIME) {
+      tourIndex = (tourIndex + 1) % artworks.length;
+      beginTravelTo(tourIndex);
+    }
+  }
+  camera.lookAt(currentTarget);
+}
+
 // Animation loop
 let prevTime = performance.now();
 
 function animate(time) {
   requestAnimationFrame(animate);
 
-  if (controls.isLocked) {
-    const delta = (time - prevTime) / 1000;
-    prevTime = time;
+  const delta = Math.min((time - prevTime) / 1000, 0.1);
+  prevTime = time;
 
+  if (tourActive) {
+    updateTour(delta);
+  } else if (controls.isLocked) {
     direction.z = Number(moveForward) - Number(moveBackward);
     direction.x = Number(moveRight) - Number(moveLeft);
     direction.normalize();
@@ -365,10 +465,9 @@ function animate(time) {
     clampPosition();
     updatePositionInfo();
     hoveredArtwork = checkArtworkHover();
-  } else {
-    prevTime = time;
   }
 
+  crosshair.style.opacity = controls.isLocked ? '1' : '0';
   renderer.render(scene, camera);
 }
 
@@ -391,6 +490,7 @@ async function init() {
   loading.style.opacity = '0';
   setTimeout(() => loading.remove(), 500);
   animate(performance.now());
+  startTour(0);
 }
 
 init().catch(err => {
