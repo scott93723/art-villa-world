@@ -190,6 +190,7 @@ function createArtwork(art) {
     const loader = new THREE.TextureLoader();
     loader.load(art.image, (tex) => {
       tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
       const aspect = tex.image.width / tex.image.height;
 
       const frameH = 1.6;
@@ -254,8 +255,8 @@ function createArtwork(art) {
       plaque.position.set(0, -clampedH / 2 - plaqueH / 2 - 0.1, 0.031);
       group.add(plaque);
 
-      // Spotlight
-      const spot = new THREE.SpotLight(0xfff5e6, 25, 6, Math.PI / 5, 0.4, 1);
+      // Spotlight — moderate intensity so bright photos don't blow out
+      const spot = new THREE.SpotLight(0xfff5e6, 9, 6, Math.PI / 5, 0.5, 1);
       spot.position.set(0, 1.2, 1.4);
       spot.target = artMesh;
       spot.castShadow = true;
