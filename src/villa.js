@@ -217,20 +217,31 @@ function createArtwork(art) {
       artMesh.userData = { artwork: art };
       group.add(artMesh);
 
-      // Plaque
+      // Plaque — 2x resolution, font auto-shrinks so long titles never clip
       const plaqueCanvas = document.createElement('canvas');
-      plaqueCanvas.width = 512;
-      plaqueCanvas.height = 128;
+      plaqueCanvas.width = 1024;
+      plaqueCanvas.height = 256;
       const ctx = plaqueCanvas.getContext('2d');
       ctx.fillStyle = '#f5f0e8';
-      ctx.fillRect(0, 0, 512, 128);
-      ctx.fillStyle = '#1a1a1a';
-      ctx.font = '700 32px "Noto Sans TC", sans-serif';
+      ctx.fillRect(0, 0, 1024, 256);
       ctx.textAlign = 'center';
-      ctx.fillText(art.title, 256, 50);
-      ctx.font = '300 26px "Noto Sans TC", sans-serif';
+      ctx.textBaseline = 'middle';
+
+      const plaqueFamily = '"Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif';
+      const fitFont = (text, weight, size, maxWidth) => {
+        do {
+          ctx.font = `${weight} ${size}px ${plaqueFamily}`;
+          size -= 2;
+        } while (size > 20 && ctx.measureText(text).width > maxWidth);
+      };
+
+      ctx.fillStyle = '#1a1a1a';
+      fitFont(art.title, 700, 64, 940);
+      ctx.fillText(art.title, 512, 92);
       ctx.fillStyle = '#666';
-      ctx.fillText(`${art.year} · ${art.price} ${art.currency}`, 256, 90);
+      const plaqueSub = `${art.year} · ${art.price} ${art.currency}`;
+      fitFont(plaqueSub, 400, 48, 940);
+      ctx.fillText(plaqueSub, 512, 180);
       const plaqueTex = new THREE.CanvasTexture(plaqueCanvas);
       plaqueTex.colorSpace = THREE.SRGBColorSpace;
 
@@ -482,6 +493,17 @@ async function init() {
   await loadArtistData();
   buildVilla();
   setupLighting();
+
+  // Wait for the CJK webfont so plaque canvas text uses the right glyphs/metrics
+  try {
+    await Promise.race([
+      Promise.all([
+        document.fonts.load('700 64px "Noto Sans TC"'),
+        document.fonts.load('400 48px "Noto Sans TC"'),
+      ]),
+      new Promise((resolve) => setTimeout(resolve, 3000)),
+    ]);
+  } catch (e) { /* fall back to system fonts */ }
 
   for (const art of artworks) {
     await createArtwork(art);
