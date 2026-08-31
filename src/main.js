@@ -133,47 +133,29 @@ function createSky() {
 // TERRAIN & LANDSCAPE
 // ============================================================
 function createTerrain() {
-  const geo = new THREE.PlaneGeometry(120, 120, 128, 128);
-  const pos = geo.attributes.position;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i);
-    const z = pos.getY(i);
-    const d = Math.sqrt(x * x + z * z);
-    const h = Math.max(0, (d - 18) * 0.12) * Math.sin(x * 0.08) * Math.cos(z * 0.08) * 2;
-    pos.setZ(i, h);
-  }
+  // Flat terrain - no valley, no hills
+  const geo = new THREE.PlaneGeometry(100, 100, 64, 64);
   geo.computeVertexNormals();
   const terrain = new THREE.Mesh(geo, grassMat);
   terrain.rotation.x = -Math.PI / 2;
-  terrain.position.y = -0.1;
+  terrain.position.y = -0.05;
   terrain.receiveShadow = true;
   layers.landscape.add(terrain);
 
-  // Rocks
-  for (let i = 0; i < 30; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const dist = 20 + Math.random() * 40;
-    const rock = new THREE.Mesh(
-      new THREE.DodecahedronGeometry(1 + Math.random() * 2, 1),
-      rockMat
-    );
-    rock.position.set(Math.cos(angle) * dist, Math.random() * 1.5, Math.sin(angle) * dist);
-    rock.rotation.set(Math.random(), Math.random(), Math.random());
-    rock.castShadow = true;
-    rock.receiveShadow = true;
-    layers.landscape.add(rock);
-  }
-
-  // Trees
+  // Only a few trees placed at the back corners
   const treeTrunkMat = new THREE.MeshStandardMaterial({ color: 0x6a5a42, roughness: 0.9 });
   const treeLeafMat = new THREE.MeshStandardMaterial({ color: 0x4a8a3a, roughness: 0.85 });
-  for (let i = 0; i < 18; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const dist = 18 + Math.random() * 40;
+
+  const treePositions = [
+    [-25, -20], [-20, -25], [25, -20], [20, -25],
+    [-30, 0], [30, 0], [-25, 20], [25, 20]
+  ];
+
+  treePositions.forEach(([x, z]) => {
     const tree = new THREE.Group();
 
     const trunk = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.2, 0.3, 4 + Math.random() * 3, 8),
+      new THREE.CylinderGeometry(0.2, 0.3, 4 + Math.random() * 2, 8),
       treeTrunkMat
     );
     trunk.position.y = 2;
@@ -181,27 +163,28 @@ function createTerrain() {
     tree.add(trunk);
 
     const leaves = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(2 + Math.random() * 1.5, 1),
+      new THREE.IcosahedronGeometry(1.8 + Math.random() * 1, 1),
       treeLeafMat
     );
-    leaves.position.y = 4.5 + Math.random() * 2;
-    leaves.scale.y = 1.3 + Math.random() * 0.7;
+    leaves.position.y = 4 + Math.random() * 1.5;
+    leaves.scale.y = 1.3 + Math.random() * 0.5;
     leaves.castShadow = true;
     tree.add(leaves);
 
-    tree.position.set(Math.cos(angle) * dist, 0, Math.sin(angle) * dist);
+    tree.position.set(x, 0, z);
     tree.rotation.y = Math.random() * Math.PI * 2;
     layers.landscape.add(tree);
-  }
+  });
 
-  // Tall grass
+  // Some tall grass near the pool
   const grassBladeMat = new THREE.MeshStandardMaterial({ color: 0x6a9a4a, roughness: 0.9 });
-  for (let i = 0; i < 45; i++) {
+  for (let i = 0; i < 20; i++) {
     const patch = new THREE.Mesh(
-      new THREE.ConeGeometry(0.4, 1.2 + Math.random() * 1.5, 4),
+      new THREE.ConeGeometry(0.3, 0.8 + Math.random() * 0.8, 4),
       grassBladeMat
     );
-    patch.position.set((Math.random() - 0.5) * 45, 0.6, (Math.random() - 0.5) * 45);
+    const side = i % 2 === 0 ? -1 : 1;
+    patch.position.set(side * (8 + Math.random() * 6), 0.4, 10 + Math.random() * 8);
     patch.castShadow = true;
     layers.landscape.add(patch);
   }
