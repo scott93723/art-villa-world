@@ -1,0 +1,261 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200">
+  <defs>
+    <pattern id="wood" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(90)">
+      <rect width="20" height="20" fill="#efe5d6"/>
+      <path d="M0 0V20M10 0V20" stroke="#ded0bd" stroke-width="1"/>
+    </pattern>
+    <pattern id="stone" width="18" height="18" patternUnits="userSpaceOnUse">
+      <rect width="18" height="18" fill="#e6e7e5"/>
+      <path d="M0 0H18M0 9H18M0 18H18M0 0V9M9 9V18M18 0V9" stroke="#d1d3d0" stroke-width="0.8"/>
+    </pattern>
+    <pattern id="deck" width="12" height="12" patternUnits="userSpaceOnUse">
+      <rect width="12" height="12" fill="#dbc8ae"/>
+      <path d="M0 0V12M6 0V12" stroke="#c4ad91" stroke-width="1"/>
+    </pattern>
+    <pattern id="water" width="28" height="16" patternUnits="userSpaceOnUse">
+      <rect width="28" height="16" fill="#b9dce0"/>
+      <path d="M0 8C6 2 12 14 18 8S26 5 28 8" fill="none" stroke="#82bac2" stroke-width="1.4"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="9" flood-color="#253238" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .panel{fill:#fbfaf7;stroke:#d7d5ce;stroke-width:1.5}
+      .wall{stroke:#252b2d;stroke-width:12;stroke-linecap:square;stroke-linejoin:miter;fill:none}
+      .part{stroke:#3f4547;stroke-width:7;stroke-linecap:square;fill:none}
+      .glass{stroke:#5ca8b7;stroke-width:8;stroke-linecap:round}
+      .thin{stroke:#555d60;stroke-width:2;fill:none}
+      .furn{fill:#f7f4ee;stroke:#657074;stroke-width:2}
+      .soft{fill:#e8ddd0;stroke:#786f67;stroke-width:2}
+      .label{font-family:"Avenir Next",Inter,sans-serif;font-size:21px;font-weight:600;fill:#242a2c;text-anchor:middle}
+      .small{font-family:"Avenir Next",Inter,sans-serif;font-size:16px;fill:#5b6264;text-anchor:middle}
+      .micro{font-family:"Avenir Next",Inter,sans-serif;font-size:13px;fill:#697174}
+      .dim{stroke:#7b8385;stroke-width:1.5;fill:none;marker-start:url(#tick);marker-end:url(#tick)}
+    </style>
+    <marker id="tick" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M1 7L7 1" stroke="#7b8385" stroke-width="1.4"/>
+    </marker>
+  </defs>
+
+  <rect width="1800" height="1200" fill="#f3f1eb"/>
+  <text x="70" y="65" font-family="Avenir Next, Inter, sans-serif" font-size="40" font-weight="650" fill="#202628">Villa Ravine Floor Plans</text>
+  <text x="72" y="101" font-family="Avenir Next, Inter, sans-serif" font-size="17" letter-spacing="1.2" fill="#737a7c">RECONSTRUCTED FROM PROCEDURAL MODEL COORDINATES · NORTH ENTRY · SOUTH GARDEN</text>
+  <line x1="70" y1="126" x2="1730" y2="126" stroke="#c9c7bf"/>
+
+  <g filter="url(#shadow)">
+    <rect class="panel" x="55" y="155" width="825" height="980" rx="5"/>
+    <rect class="panel" x="920" y="155" width="825" height="980" rx="5"/>
+  </g>
+
+  <!-- GROUND FLOOR -->
+  <g id="ground-floor">
+    <text x="105" y="210" font-family="Avenir Next, Inter, sans-serif" font-size="28" font-weight="650" fill="#252b2d">01  Ground Floor</text>
+    <text x="105" y="238" font-family="Avenir Next, Inter, sans-serif" font-size="15" fill="#737a7c">Main volume 18.0 m × 10.0 m · Approx. 180 m²</text>
+
+    <!-- north arrow -->
+    <g transform="translate(797 218)">
+      <path d="M0 24V-20M0-20L-8-4M0-20L8-4" fill="none" stroke="#252b2d" stroke-width="2.3"/>
+      <text x="0" y="-30" class="small" font-weight="700">N</text>
+    </g>
+
+    <!-- surrounding site -->
+    <path d="M130 263H780V1100H130Z" fill="#eef1e9" opacity="0.7"/>
+    <path d="M158 275H770V622H158Z" fill="url(#wood)"/>
+    <rect x="138" y="627" width="652" height="211" fill="#ddd9d0" stroke="#b6b2a8" stroke-width="2"/>
+    <rect x="158" y="637" width="388" height="191" fill="url(#deck)" opacity="0.98"/>
+    <rect x="185" y="901" width="238" height="156" rx="3" fill="url(#water)" stroke="#6caab4" stroke-width="5"/>
+    <rect x="172" y="888" width="264" height="182" fill="none" stroke="#c9c5b9" stroke-width="10"/>
+    <path d="M430 905V1052M418 920H433M418 940H433M418 960H433" stroke="#628e95" stroke-width="3"/>
+    <text x="304" y="986" class="label" fill="#3f7883">Pool</text>
+    <text x="572" y="865" class="small">South Garden</text>
+
+    <!-- floor zones -->
+    <rect x="158" y="275" width="255" height="347" fill="url(#wood)"/>
+    <rect x="413" y="275" width="136" height="347" fill="#eee9df"/>
+    <rect x="549" y="275" width="221" height="347" fill="url(#wood)"/>
+    <rect x="549" y="533" width="72" height="89" fill="url(#stone)"/>
+
+    <!-- outer and partition walls -->
+    <rect x="158" y="275" width="612" height="347" class="wall"/>
+    <path d="M413 275V438" class="part"/>
+    <path d="M549 275V445M549 510V553M549 585V622" class="part"/>
+    <path d="M549 533H621M621 533V622" class="part"/>
+
+    <!-- openings and glazing -->
+    <path d="M462 275H503" stroke="#fbfaf7" stroke-width="15"/>
+    <path d="M462 275V316A41 41 0 0 1 503 275" class="thin"/>
+    <path d="M170 622H549M621 622H758" class="glass"/>
+    <path d="M549 448V507" stroke="#fbfaf7" stroke-width="11"/>
+    <path d="M549 448H590A41 41 0 0 0 549 489" class="thin"/>
+    <path d="M549 556V582" stroke="#fbfaf7" stroke-width="11"/>
+    <path d="M549 556H575A26 26 0 0 0 549 582" class="thin"/>
+    <path d="M196 275H277M565 275H660M158 337V381M158 446V490M158 548V592M770 301V349M770 445V546" class="glass"/>
+
+    <!-- stairs -->
+    <rect x="430" y="409" width="52" height="171" fill="#f8f7f2" stroke="#596164" stroke-width="3"/>
+    <path d="M430 420H482M430 430H482M430 440H482M430 450H482M430 460H482M430 470H482M430 480H482M430 490H482M430 500H482M430 510H482M430 520H482M430 530H482M430 540H482M430 550H482M430 560H482M430 570H482" stroke="#747d80" stroke-width="1.5"/>
+    <path d="M456 558V432M456 432L449 444M456 432L463 444" stroke="#3d4649" stroke-width="2"/>
+
+    <!-- living furniture -->
+    <rect x="229" y="322" width="99" height="34" rx="8" class="soft"/>
+    <rect x="176" y="372" width="34" height="68" rx="8" class="soft"/>
+    <rect x="221" y="366" width="130" height="104" rx="5" fill="#dfd2bf" opacity="0.62"/>
+    <rect x="251" y="388" width="53" height="24" rx="4" class="furn"/>
+    <circle cx="333" cy="429" r="15" class="soft"/>
+    <circle cx="256" cy="446" r="15" class="soft"/>
+    <rect x="173" y="553" width="75" height="19" class="furn"/>
+    <rect x="400" y="339" width="13" height="75" fill="#495053"/>
+
+    <!-- hall furniture -->
+    <rect x="421" y="290" width="47" height="15" class="furn"/>
+    <rect x="522" y="335" width="18" height="54" class="furn"/>
+
+    <!-- kitchen and dining furniture -->
+    <rect x="557" y="287" width="199" height="27" class="furn"/>
+    <rect x="664" y="351" width="102" height="40" rx="3" class="furn"/>
+    <circle cx="681" cy="405" r="7" class="furn"/><circle cx="712" cy="405" r="7" class="furn"/><circle cx="743" cy="405" r="7" class="furn"/>
+    <rect x="666" y="493" width="78" height="34" rx="3" class="furn"/>
+    <circle cx="678" cy="482" r="7" class="furn"/><circle cx="705" cy="482" r="7" class="furn"/><circle cx="732" cy="482" r="7" class="furn"/>
+    <circle cx="678" cy="538" r="7" class="furn"/><circle cx="705" cy="538" r="7" class="furn"/><circle cx="732" cy="538" r="7" class="furn"/>
+
+    <!-- powder furniture -->
+    <rect x="560" y="540" width="35" height="16" class="furn"/>
+    <ellipse cx="605" cy="596" rx="10" ry="17" class="furn"/>
+
+    <!-- room labels -->
+    <text x="284" y="506" class="label">Living Room</text>
+    <text x="477" y="352" class="label">Entry</text>
+    <text x="456" y="607" class="small">Stair Hall</text>
+    <text x="653" y="340" class="label">Kitchen</text>
+    <text x="704" y="472" class="label">Dining</text>
+    <text x="585" y="579" class="small">Powder</text>
+    <text x="475" y="655" class="micro">FULL-HEIGHT SLIDING GLASS DOORS</text>
+
+    <!-- terrace furniture -->
+    <rect x="205" y="682" width="84" height="31" rx="8" class="soft"/>
+    <rect x="174" y="720" width="31" height="64" rx="7" class="soft"/>
+    <rect x="235" y="749" width="42" height="25" rx="4" class="furn"/>
+    <path d="M168 645V820M385 645V820M168 654H385M168 678H385" stroke="#667073" stroke-width="3" opacity="0.8"/>
+    <rect x="627" y="681" width="87" height="37" class="furn"/>
+    <circle cx="640" cy="665" r="7" class="furn"/><circle cx="670" cy="665" r="7" class="furn"/><circle cx="700" cy="665" r="7" class="furn"/>
+    <circle cx="640" cy="735" r="7" class="furn"/><circle cx="670" cy="735" r="7" class="furn"/><circle cx="700" cy="735" r="7" class="furn"/>
+    <text x="474" y="803" class="label">South Terrace</text>
+
+    <!-- dimensions -->
+    <path d="M158 253H770" class="dim"/>
+    <text x="464" y="247" class="small">18.0 m</text>
+    <path d="M799 275V622" class="dim"/>
+    <text x="816" y="453" class="small" transform="rotate(90 816 453)">10.0 m</text>
+    <path d="M158 1089H770" stroke="#b7b4aa"/>
+    <text x="464" y="1115" class="micro" text-anchor="middle">GARDEN AND POOL SHOWN FOR SITE CONTEXT</text>
+  </g>
+
+  <!-- UPPER FLOOR -->
+  <g id="upper-floor">
+    <text x="970" y="210" font-family="Avenir Next, Inter, sans-serif" font-size="28" font-weight="650" fill="#252b2d">02  Upper Floor</text>
+    <text x="970" y="238" font-family="Avenir Next, Inter, sans-serif" font-size="15" fill="#737a7c">Main volume 15.0 m × 12.0 m · Three bedrooms · Two baths · West roof terrace</text>
+
+    <g transform="translate(1662 218)">
+      <path d="M0 24V-20M0-20L-8-4M0-20L8-4" fill="none" stroke="#252b2d" stroke-width="2.3"/>
+      <text x="0" y="-30" class="small" font-weight="700">N</text>
+    </g>
+
+    <!-- upper footprint and zones -->
+    <rect x="1000" y="286" width="114" height="380" fill="url(#deck)" stroke="#8e8376" stroke-width="5"/>
+    <rect x="1114" y="286" width="190" height="99" fill="url(#stone)"/>
+    <rect x="1114" y="385" width="190" height="183" fill="url(#wood)"/>
+    <rect x="1114" y="568" width="190" height="174" fill="url(#wood)"/>
+    <rect x="1304" y="286" width="99" height="456" fill="#eee9df"/>
+    <rect x="1403" y="286" width="281" height="228" fill="url(#stone)"/>
+    <rect x="1403" y="514" width="281" height="228" fill="url(#wood)"/>
+
+    <!-- outer / partitions -->
+    <rect x="1114" y="286" width="570" height="456" class="wall"/>
+    <path d="M1304 286V425M1304 459V633M1304 667V742" class="part"/>
+    <path d="M1403 286V421M1403 455V528M1403 562V742" class="part"/>
+    <path d="M1114 385H1304M1114 568H1304M1403 514H1684" class="part"/>
+
+    <!-- glazing -->
+    <path d="M1138 286H1214M1285 286H1304M1464 286H1510M1592 286H1648" class="glass"/>
+    <path d="M1132 742H1285M1333 742H1385M1418 742H1665" class="glass"/>
+    <path d="M1114 442V481M1114 618V690M1684 395V508M1684 594V708" class="glass"/>
+
+    <!-- central stair void -->
+    <rect x="1304" y="434" width="57" height="190" fill="#f3f1eb" stroke="#4d5659" stroke-width="3" stroke-dasharray="8 5"/>
+    <path d="M1310 447H1355M1310 460H1355M1310 473H1355M1310 486H1355M1310 499H1355M1310 512H1355M1310 525H1355M1310 538H1355M1310 551H1355M1310 564H1355M1310 577H1355M1310 590H1355M1310 603H1355" stroke="#6f787b" stroke-width="1.4"/>
+    <path d="M1377 439V620" stroke="#637276" stroke-width="4"/>
+
+    <!-- roof terrace furniture -->
+    <rect x="1028" y="328" width="31" height="77" rx="7" class="soft" transform="rotate(90 1043.5 366.5)"/>
+    <rect x="1028" y="420" width="31" height="77" rx="7" class="soft" transform="rotate(90 1043.5 458.5)"/>
+    <rect x="1026" y="560" width="62" height="26" class="furn"/>
+    <circle cx="1030" cy="633" r="12" fill="#78906f"/><circle cx="1055" cy="635" r="15" fill="#6d8565"/><circle cx="1082" cy="631" r="11" fill="#7f9775"/>
+
+    <!-- bath 2 furniture -->
+    <rect x="1130" y="350" width="55" height="18" class="furn"/>
+    <rect x="1243" y="296" width="49" height="49" class="furn"/>
+    <ellipse cx="1248" cy="359" rx="10" ry="16" class="furn"/>
+
+    <!-- bedroom 3 -->
+    <rect x="1148" y="435" width="68" height="82" rx="5" class="soft"/>
+    <rect x="1146" y="430" width="72" height="13" fill="#806f61"/>
+    <rect x="1225" y="401" width="58" height="24" class="furn"/>
+    <circle cx="1252" cy="437" r="9" class="furn"/>
+
+    <!-- bedroom 2 -->
+    <rect x="1150" y="608" width="77" height="85" rx="5" class="soft"/>
+    <rect x="1148" y="601" width="81" height="14" fill="#806f61"/>
+    <rect x="1238" y="591" width="47" height="21" class="furn"/>
+    <rect x="1130" y="704" width="55" height="23" class="furn"/>
+
+    <!-- ensuite furniture -->
+    <rect x="1583" y="314" width="47" height="84" rx="15" class="furn"/>
+    <rect x="1430" y="300" width="57" height="57" class="furn"/>
+    <rect x="1496" y="473" width="77" height="20" class="furn"/>
+    <ellipse cx="1440" cy="440" rx="11" ry="17" class="furn"/>
+
+    <!-- master bedroom furniture -->
+    <rect x="1514" y="568" width="84" height="88" rx="5" class="soft"/>
+    <rect x="1508" y="560" width="96" height="15" fill="#806f61"/>
+    <rect x="1431" y="595" width="23" height="99" class="furn"/>
+    <rect x="1519" y="680" width="74" height="24" rx="5" class="soft"/>
+    <circle cx="1644" cy="689" r="16" class="soft"/>
+
+    <!-- labels -->
+    <text x="1057" y="506" class="label" style="font-size:18px">Roof</text>
+    <text x="1057" y="530" class="label" style="font-size:18px">Terrace</text>
+    <text x="1209" y="329" class="label">Shared Bath</text>
+    <text x="1209" y="548" class="label">Bedroom 3</text>
+    <text x="1209" y="719" class="label">Bedroom 2</text>
+    <text x="1354" y="390" class="small">Corridor</text>
+    <text x="1378" y="536" class="small" transform="rotate(90 1378 536)">Void / Stair</text>
+    <text x="1550" y="449" class="label">Ensuite</text>
+    <text x="1550" y="727" class="label">Primary Bedroom</text>
+
+    <!-- dimensions -->
+    <path d="M1114 263H1684" class="dim"/>
+    <text x="1399" y="257" class="small">15.0 m</text>
+    <path d="M1714 286V742" class="dim"/>
+    <text x="1730" y="517" class="small" transform="rotate(90 1730 517)">12.0 m</text>
+
+    <!-- legend -->
+    <g transform="translate(1000 835)">
+      <text x="0" y="0" font-family="Avenir Next, Inter, sans-serif" font-size="18" font-weight="650" fill="#303638">Material Key</text>
+      <rect x="0" y="24" width="36" height="22" fill="url(#wood)" stroke="#c3b6a7"/><text x="48" y="41" class="micro">Oak Flooring</text>
+      <rect x="160" y="24" width="36" height="22" fill="url(#stone)" stroke="#c3c6c3"/><text x="208" y="41" class="micro">Stone / Wet Area</text>
+      <rect x="355" y="24" width="36" height="22" fill="url(#deck)" stroke="#b4a28c"/><text x="403" y="41" class="micro">Exterior Decking</text>
+      <line x1="545" y1="35" x2="585" y2="35" class="glass"/><text x="665" y="41" class="micro" text-anchor="middle">Full-height Glazing</text>
+    </g>
+
+    <g transform="translate(1000 940)">
+      <text x="0" y="0" font-family="Avenir Next, Inter, sans-serif" font-size="18" font-weight="650" fill="#303638">Design Notes</text>
+      <circle cx="8" cy="36" r="3.5" fill="#616a6c"/><text x="22" y="42" class="micro">Public spaces open south toward the terrace and pool</text>
+      <circle cx="8" cy="72" r="3.5" fill="#616a6c"/><text x="22" y="78" class="micro">The central stair and void connect both daylit levels</text>
+      <circle cx="8" cy="108" r="3.5" fill="#616a6c"/><text x="22" y="114" class="micro">Bedrooms are zoned by wing; the primary suite is self-contained</text>
+    </g>
+
+    <text x="1000" y="1093" class="micro">SCALE  0</text>
+    <rect x="1100" y="1078" width="50" height="12" fill="#303638"/><rect x="1150" y="1078" width="50" height="12" fill="#fff" stroke="#303638"/><rect x="1200" y="1078" width="100" height="12" fill="#303638"/>
+    <text x="1100" y="1114" class="micro">1 m</text><text x="1200" y="1114" class="micro">3 m</text><text x="1300" y="1114" class="micro">5 m</text>
+  </g>
+</svg>

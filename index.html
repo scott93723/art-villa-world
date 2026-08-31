@@ -1,308 +1,71 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>溪谷別墅 · 實時建築模型</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      width: 100%; height: 100%;
-      overflow: hidden;
-      background: #87CEEB;
-      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      color: #f2f2f2;
-    }
-    #canvas { display: block; width: 100%; height: 100%; }
-    #ui {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 24px;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-    .title-block h1 {
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 200;
-      letter-spacing: 0.08em;
-      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
-      color: #fff;
-    }
-    .title-block p {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.85);
-      margin-top: 8px;
-      letter-spacing: 0.05em;
-    }
-    .floor-plan {
-      width: 220px;
-      background: rgba(0,0,0,0.5);
-      border-radius: 8px;
-      padding: 12px;
-      pointer-events: auto;
-      backdrop-filter: blur(8px);
-    }
-    .floor-plan-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-    .floor-plan-header span {
-      font-size: 0.8rem;
-      color: #ccc;
-    }
-    .floor-plan-header button {
-      background: none;
-      border: none;
-      color: #999;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .floor-plan-content {
-      font-size: 0.75rem;
-      color: #aaa;
-      line-height: 1.6;
-    }
-    .floor-plan-content img {
-      width: 100%;
-      border-radius: 4px;
-      margin-top: 8px;
-      background: #fff;
-    }
-    .left-panel {
-      position: absolute;
-      left: 24px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .left-panel button {
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: #ddd;
-      padding: 10px 16px;
-      text-align: left;
-      font-family: inherit;
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      min-width: 140px;
-    }
-    .left-panel button:hover {
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-    }
-    .left-panel button.active {
-      background: rgba(255,255,255,0.15);
-      color: #fff;
-      border-left: 3px solid #ff6b9d;
-    }
-    .right-panel {
-      position: absolute;
-      right: 24px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      width: 200px;
-    }
-    .panel-section {
-      background: rgba(0,0,0,0.4);
-      border-radius: 8px;
-      padding: 12px;
-      backdrop-filter: blur(8px);
-    }
-    .panel-section h3 {
-      font-size: 0.75rem;
-      color: #aaa;
-      font-weight: 400;
-      letter-spacing: 0.1em;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-    }
-    .time-slider {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .time-slider input {
-      flex: 1;
-      -webkit-appearance: none;
-      height: 4px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 2px;
-      outline: none;
-    }
-    .time-slider input::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      background: #fff;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-    .time-value {
-      font-size: 0.8rem;
-      color: #fff;
-      min-width: 40px;
-    }
-    .layer-toggles {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .layer-toggles button {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: #ddd;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-family: inherit;
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .layer-toggles button:hover {
-      background: rgba(255,255,255,0.2);
-    }
-    .layer-toggles button.active {
-      background: rgba(255,255,255,0.25);
-      color: #fff;
-    }
-    .auto-orbit {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      color: #ccc;
-    }
-    .auto-orbit input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
-    .controls-hint {
-      text-align: center;
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.7);
-      letter-spacing: 0.1em;
-    }
-    #loading {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 0.9rem;
-      letter-spacing: 0.2em;
-      color: #666;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-    #portal-hint {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, 80px);
-      font-size: 0.9rem;
-      letter-spacing: 0.15em;
-      color: #ffd0e0;
-      text-shadow: 0 0 20px rgba(255,107,157,0.8);
-      pointer-events: none;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; }
-      50% { opacity: 1; }
-    }
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@200;400;700&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>溪谷別墅 · 實時建築模型</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d0f11'/%3E%3Crect x='6' y='14' width='20' height='11' fill='%23e8b877'/%3E%3Crect x='6' y='8' width='13' height='6' fill='%23b9b3a7'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="style.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "./lib/three.module.js",
+    "three/addons/": "./lib/three/addons/"
+  }
+}
+</script>
 </head>
 <body>
-  <div id="loading">正在建構溪谷別墅…</div>
-  <div id="portal-hint">點擊進入 ICY 別墅</div>
-  <canvas id="canvas"></canvas>
-  <div id="ui">
-    <div class="header">
-      <div class="title-block">
-        <h1>溪谷別墅</h1>
-        <p>實時建築模型 · 程序化幾何 · 製作者 WDL</p>
-      </div>
-      <div class="floor-plan">
-        <div class="floor-plan-header">
-          <span>戶型圖</span>
-          <button id="toggle-floor-plan">−</button>
-        </div>
-        <div class="floor-plan-content" id="floor-plan-content">
-          <div>Villa Ravine 戶型設計</div>
-          <div>雙層住宅 · 混凝土基座 · 懸挑木結構</div>
-        </div>
-      </div>
-    </div>
-    <div class="controls-hint">拖拽環繞 · 滾輪縮放 · 右鍵拖拽平移</div>
+<canvas id="app"></canvas>
+
+<div id="loader">
+  <div class="lwrap">
+    <div class="lbar"><i></i></div>
+    <div class="ltxt">正在构建几何模型…</div>
   </div>
+</div>
 
-  <div class="left-panel" id="camera-positions">
-    <button data-pos="0">01 入口庭院</button>
-    <button data-pos="1">02 西南花園</button>
-    <button data-pos="2">03 南立面</button>
-    <button data-pos="3">04 露台層</button>
-    <button data-pos="4">05 客廳</button>
-    <button data-pos="5">06 廚房與餐廳</button>
-    <button data-pos="6">07 樓梯廳與挑空</button>
-    <button data-pos="7">08 主臥</button>
-    <button data-pos="8">09 屋頂露台</button>
-    <button data-pos="9">10 細節 · 材料交接</button>
-    <button data-pos="10">11 鳥瞰</button>
+<aside id="plan">
+  <div class="plabel"><span>户型图</span><em>点击收起</em></div>
+  <img src="assets/villa-ravine-floor-plan.png" alt="溪谷别墅一层与二层户型图" />
+</aside>
+<button id="planbtn" hidden>户型图</button>
+
+<header id="titlecard">
+  <div class="kicker">实时建筑模型 · 程序化几何</div>
+  <h1>溪谷别墅</h1>
+  <p>一座面向庭院的双层住宅：清水混凝土基座、悬挑木结构起居层，以及通向南向露台的落地玻璃。</p>
+  <div class="meta">
+    <span><b id="stat-tris">—</b> 三角面</span>
+    <span><b id="stat-parts">—</b> 部件</span>
+    <span><b id="stat-fps">—</b> 帧/秒</span>
   </div>
+</header>
 
-  <div class="right-panel">
-    <div class="panel-section">
-      <h3>時段</h3>
-      <div class="time-slider">
-        <span class="time-value" id="time-label">清晨</span>
-        <input type="range" id="time-slider" min="0" max="100" value="20">
-      </div>
-    </div>
-    <div class="panel-section">
-      <h3>圖層</h3>
-      <div class="layer-toggles" id="layer-toggles">
-        <button data-layer="roof" class="active">屋頂</button>
-        <button data-layer="second-floor" class="active">二層</button>
-        <button data-layer="furniture" class="active">家具</button>
-        <button data-layer="landscape" class="active">景觀</button>
-        <button data-layer="sliding-door" class="active">推拉門</button>
-      </div>
-    </div>
-    <div class="panel-section">
-      <label class="auto-orbit">
-        <input type="checkbox" id="auto-orbit">
-        <span>自動環繞</span>
-      </label>
-    </div>
+<nav id="views">
+  <div class="grp-label">视角</div>
+  <div class="btns" id="viewbtns"></div>
+</nav>
+
+<section id="panel">
+  <label class="row">
+    <span>时段</span>
+    <input id="tod" type="range" min="0" max="1" step="0.001" value="0.28" />
+    <em id="todlabel">清晨</em>
+  </label>
+  <div class="row toggles">
+    <button data-t="roof" class="on">屋顶</button>
+    <button data-t="walls" class="on">二层</button>
+    <button data-t="furn" class="on">家具</button>
+    <button data-t="veg" class="on">景观</button>
+    <button data-t="doors" class="on">推拉门</button>
+    <button data-t="spin">自动环绕</button>
   </div>
+  <div class="hint">拖拽环绕 · 滚轮缩放 · 右键拖拽平移</div>
+</section>
 
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "./lib/three.module.js",
-      "three/addons/": "./lib/three/addons/"
-    }
-  }
-  </script>
+<a href="./villa.html?artist=icy" id="enter-gallery">進入 ICY 別墅畫廊 →</a>
 
-  <script type="module" src="./src/main.js"></script>
+<script type="module" src="./js/main.js"></script>
 </body>
 </html>
