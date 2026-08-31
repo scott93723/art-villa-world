@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art Villa World · 藝術家村</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #0a0a0f;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: #f2f2f2;
+    }
+    #canvas { display: block; width: 100%; height: 100%; }
+    #ui {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 28px 34px;
+    }
+    #ui h1 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 200;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.6);
+    }
+    #ui h1 span {
+      display: block;
+      font-size: 0.32em;
+      letter-spacing: 0.42em;
+      color: #aaa;
+      margin-top: 0.6em;
+    }
+    #ui .meta {
+      font-size: 0.85rem;
+      color: #999;
+      letter-spacing: 0.08em;
+      display: flex;
+      gap: 28px;
+      align-items: flex-end;
+    }
+    #ui .meta strong { color: #fff; font-weight: 400; }
+    #loading {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      color: #888;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    #portal-hint {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, 60px);
+      font-size: 0.9rem;
+      letter-spacing: 0.15em;
+      color: #ffd0e0;
+      text-shadow: 0 0 20px rgba(255,107,157,0.8);
+      pointer-events: none;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@200;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="loading">正在建構藝術家村…</div>
+  <div id="portal-hint">點擊進入 ICY 別墅</div>
+  <canvas id="canvas"></canvas>
+  <div id="ui">
+    <div>
+      <h1>Art Villa World<span>溪谷別墅 · 藝術家畫廊宇宙</span></h1>
+    </div>
+    <div class="meta">
+      <div>已入住藝術家<br><strong>1 位</strong></div>
+      <div>操作方式<br><strong>拖拽環繞 · 滾輪縮放 · 點擊別墅進入</strong></div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./lib/three.module.js",
+      "three/addons/": "./lib/three/addons/"
+    }
+  }
+  </script>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

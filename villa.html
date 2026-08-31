@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Villa Gallery · 藝術家別墅</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #0d0d0d;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: #f2f2f2;
+    }
+    #canvas { display: block; width: 100%; height: 100%; }
+    #ui {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 28px 34px;
+    }
+    #ui h1 {
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 200;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.6);
+    }
+    #ui h1 span {
+      display: block;
+      font-size: 0.35em;
+      letter-spacing: 0.42em;
+      color: #aaa;
+      margin-top: 0.6em;
+    }
+    #ui .meta {
+      font-size: 0.85rem;
+      color: #999;
+      letter-spacing: 0.08em;
+      display: flex;
+      gap: 28px;
+      align-items: flex-end;
+    }
+    #ui .meta strong { color: #fff; font-weight: 400; }
+    #loading {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      color: #888;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    #crosshair {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px; height: 8px;
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 50%;
+      pointer-events: none;
+      transition: transform 0.1s ease;
+    }
+    #crosshair.hover {
+      transform: translate(-50%, -50%) scale(2);
+      border-color: #ff6b9d;
+    }
+    #art-info {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(90vw, 500px);
+      background: rgba(20,20,20,0.95);
+      border: 1px solid rgba(255,107,157,0.4);
+      border-radius: 16px;
+      padding: 28px;
+      pointer-events: auto;
+      display: none;
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+    #art-info.active { display: block; }
+    #art-info img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    #art-info h2 { font-weight: 400; margin-bottom: 8px; letter-spacing: 0.05em; }
+    #art-info .meta { color: #999; font-size: 0.9rem; margin-bottom: 12px; }
+    #art-info .price { font-size: 1.5rem; color: #ff6b9d; margin-bottom: 16px; }
+    #art-info button {
+      background: #ff6b9d;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      transition: background 0.2s ease;
+    }
+    #art-info button:hover { background: #ff8fb3; }
+    #art-info .close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      width: 32px; height: 32px;
+      line-height: 1;
+    }
+    #nav-controls {
+      position: absolute;
+      bottom: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: auto;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: rgba(0,0,0,0.45);
+      padding: 10px 18px;
+      border-radius: 999px;
+      backdrop-filter: blur(6px);
+    }
+    #nav-controls button {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      transition: background 0.2s ease;
+    }
+    #nav-controls button:hover { background: rgba(255,255,255,0.22); }
+    #nav-controls span {
+      color: #ccc;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@200;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="loading">正在進入別墅…</div>
+  <div id="crosshair"></div>
+  <canvas id="canvas"></canvas>
+  <div id="ui">
+    <div>
+      <h1 id="villa-title">Villa<span id="villa-subtitle">Artist Gallery</span></h1>
+    </div>
+    <div class="meta">
+      <div>作品數量<br><strong id="artwork-count">0</strong></div>
+      <div>操作方式<br><strong>點擊畫面鎖定滑鼠 · WASD 移動 · 點擊畫作查看</strong></div>
+    </div>
+  </div>
+
+  <div id="art-info">
+    <button class="close" id="close-info">×</button>
+    <img id="info-image" src="" alt="">
+    <h2 id="info-title"></h2>
+    <div class="meta" id="info-meta"></div>
+    <div class="price" id="info-price"></div>
+    <button id="buy-btn">聯絡購買</button>
+  </div>
+
+  <div id="nav-controls">
+    <button id="back-btn">← 返回藝術家村</button>
+    <span id="position-info">位置: 入口</span>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./lib/three.module.js",
+      "three/addons/": "./lib/three/addons/"
+    }
+  }
+  </script>
+
+  <script type="module" src="./src/villa.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+{
+  "artists": [
+    {
+      "id": "icy",
+      "name": "ICY",
+      "realName": "Icy Wang",
+      "tagline": "Contemporary surrealist painter",
+      "bio": "Icy Wang creates whimsical yet melancholic worlds where mechanical creatures and spiritual icons coexist. Her work bridges pop culture and classical meditation.",
+      "villa": {
+        "style": "valley",
+        "accentColor": "#ff6b9d",
+        "ambientMusic": "assets/audio/icy-ambient.mp3"
+      },
+      "artworks": [
+        {
+          "id": "robot-cat-pink",
+          "title": "機器貓日常 Robot Cat's Daily (Pink)",
+          "year": "2014",
+          "size": "30cm × 30cm",
+          "material": "Acrylics on canvas",
+          "price": 1200,
+          "currency": "USD",
+          "image": "data/artworks/robot-cat-pink.jpg",
+          "position": { "x": -3, "z": -7.8, "ry": 0, "wall": "north" }
+        },
+        {
+          "id": "robot-cat-yellow",
+          "title": "機器貓日常 Robot Cat's Daily (Yellow)",
+          "year": "2014",
+          "size": "30cm × 30cm",
+          "material": "Acrylics on canvas",
+          "price": 1200,
+          "currency": "USD",
+          "image": "data/artworks/robot-cat-yellow.jpg",
+          "position": { "x": 0, "z": -7.8, "ry": 0, "wall": "north" }
+        },
+        {
+          "id": "robot-cat-gray",
+          "title": "機器貓日常 Robot Cat's Daily (Gray)",
+          "year": "2014",
+          "size": "30cm × 30cm",
+          "material": "Acrylics on canvas",
+          "price": 1200,
+          "currency": "USD",
+          "image": "data/artworks/robot-cat-gray.jpg",
+          "position": { "x": 3, "z": -7.8, "ry": 0, "wall": "north" }
+        },
+        {
+          "id": "guanyin-w01",
+          "title": "觀音系列 Guanyin #w01",
+          "year": "2020",
+          "size": "21cm × 29cm",
+          "material": "Watercolors on paper",
+          "price": 800,
+          "currency": "USD",
+          "image": "data/artworks/guanyin-w01.jpg",
+          "position": { "x": -7.8, "z": -3, "ry": 1.5708, "wall": "west" }
+        },
+        {
+          "id": "buddha-heart-sutra",
+          "title": "心經觀音 Heart Sutra Guanyin",
+          "year": "2020",
+          "size": "80cm × 100cm",
+          "material": "Acrylics on canvas",
+          "price": 3500,
+          "currency": "USD",
+          "image": "data/artworks/buddha-heart-sutra.jpg",
+          "position": { "x": -7.8, "z": 3, "ry": 1.5708, "wall": "west" }
+        },
+        {
+          "id": "robot-cat-blue",
+          "title": "機器貓日常 Robot Cat's Daily (Blue)",
+          "year": "2014",
+          "size": "30cm × 30cm",
+          "material": "Acrylics on canvas",
+          "price": 1200,
+          "currency": "USD",
+          "image": "data/artworks/robot-cat-blue.jpg",
+          "position": { "x": 7.8, "z": -3, "ry": -1.5708, "wall": "east" }
+        },
+        {
+          "id": "surreal-flower",
+          "title": "向日葵 Sunflower",
+          "year": "2014",
+          "size": "60cm × 70cm",
+          "material": "Acrylics on canvas",
+          "price": 2200,
+          "currency": "USD",
+          "image": "data/artworks/surreal-flower.jpg",
+          "position": { "x": 7.8, "z": 3, "ry": -1.5708, "wall": "east" }
+        },
+        {
+          "id": "icy-portrait",
+          "title": "ICY Portrait",
+          "year": "2024",
+          "size": "1080 × 1080",
+          "material": "Photography",
+          "price": 500,
+          "currency": "USD",
+          "image": "data/artworks/icy-portrait.jpg",
+          "position": { "x": -5.5, "z": 7.8, "ry": 3.1416, "wall": "south" }
+        },
+        {
+          "id": "icy-studio",
+          "title": "ICY Studio",
+          "year": "2024",
+          "size": "1080 × 1080",
+          "material": "Photography",
+          "price": 500,
+          "currency": "USD",
+          "image": "data/artworks/icy-studio.jpg",
+          "position": { "x": 5.5, "z": 7.8, "ry": 3.1416, "wall": "south" }
+        }
+      ]
+    }
+  ]
+}
